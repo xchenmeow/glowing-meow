@@ -1,0 +1,54 @@
+import urllib
+import datetime
+import csv
+import os
+
+today = datetime.datetime.today()
+year = today.year
+month = today.month
+day = today.day
+if os.path.isfile("yahoo_data.csv"):
+    m1 = "0" + str(month-1)
+    d1 = str(day-3)
+    y1 = str(year)
+    m2 = "0" + str(month-1)
+    d2 = str(day)
+    y2 = str(year)
+    symbol = "%5EGSPC"
+    urlstr = "http://ichart.yahoo.com/table.csv?s=" + symbol + \
+            "&a=" + m1 + "&b=" + d1 + "&c=" + y1 +\
+            "&d=" + m2 + "&e=" + d2 + "&f=" + y2 +\
+            "&g=d&ignore=.csv"
+
+    f = urllib.urlopen(urlstr)
+    lines = f.readlines()
+    f.close()
+    # print lines[1]
+    resultFile = open("yahoo_data.csv",'a')
+    # print resultFile
+    # resultFile.readline()
+    resultFile.write(lines[1])
+else:
+    m1 = "00"
+    d1 = "3"
+    y1 = "2013"
+    m2 = "0" + str(month-1)
+    d2 = str(day)
+    y2 = str(year)
+    symbol = "%5EGSPC"
+    urlstr = "http://ichart.yahoo.com/table.csv?s=" + symbol + \
+            "&a=" + m1 + "&b=" + d1 + "&c=" + y1 +\
+            "&d=" + m2 + "&e=" + d2 + "&f=" + y2 +\
+            "&g=d&ignore=.csv"
+    # urllib.urlretrieve(urlstr, "yahoo_data.csv")
+    f = urllib.urlopen(urlstr)
+    lines = f.readlines()
+    f.close
+    lines.reverse()
+    n = len(lines)
+    header = lines.pop(n-1)
+    resultFile = open("yahoo_data.csv",'wb')
+    resultFile.write(header)
+    for item in lines:
+        resultFile.write(item)
+    

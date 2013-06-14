@@ -62,7 +62,7 @@ class DataUpdater(object):
         else:
             m1 = "00"
             d1 = "3"
-            y1 = "2013"
+            y1 = "2000"
             m2 = "0" + str(month-1)
             d2 = str(day)
             y2 = str(year)
@@ -84,8 +84,7 @@ class DataUpdater(object):
                 resultFile.write(item)
 
 
-foo1 = DataUpdater("%5EGSPC")
-foo1.updater()
-foo2 = DataUpdater("SPY")
-foo2.updater()
-
+tickerList = ["%5EGSPC", "SPY", "%5EVIX"]
+for ticker in tickerList:
+    foo = DataUpdater(ticker)
+    foo.updater()

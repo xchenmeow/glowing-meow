@@ -57,8 +57,13 @@ class DataUpdater(object):
                 print "The data is already up to date"
                 # sys.exit(0)
                 return 0
+            lines.pop()
+            lines.reverse()
+            lines.pop()
+            n = len(lines)
             resultFile = open(filename,'a')
-            resultFile.write(lines[1])
+            for item in lines:
+                resultFile.write(item)
         else:
             m1 = "00"
             d1 = "3"

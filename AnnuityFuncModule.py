@@ -2,7 +2,7 @@ from scipy.optimize import fsolve
 import math
 
 def FutureValue(arg):
-  r = arg[0]
+	r = arg[0]
 	n = arg[1]
 	pmt = arg[2]
 	if len(arg) < 4:
@@ -12,11 +12,11 @@ def FutureValue(arg):
 	cpmt = pmt * (1+r) * (1 - (1+r)**n) / (1 - (1+r))
 	fv = cpmt + pv * (1+r)**n
 	return fv
-fvPara = [0.05, 5, 100, 100]
+
+# fvPara = [0.05, 5, 100, 100]
 # rate, nper, pmt, pv(optional)
- 
-fv = FutureValue(fvPara)
-print fv
+# fv = FutureValue(fvPara)
+
 
 
 def PresentValue(arg):
@@ -30,11 +30,10 @@ def PresentValue(arg):
 	cpmt = pmt / (1+r) * (1 - 1 / (1+r)**n) / (1 - 1/(1+r))
 	pv = cpmt + fv / (1+r)**n
 	return pv
-pvPara = [0.05, 5, 100, 100]
-# rate, nper, pmt, fv(optional)
 
-pv = PresentValue(pvPara)
-print pv
+# pvPara = [0.05, 5, 100, 100]
+# rate, nper, pmt, fv(optional)
+# pv = PresentValue(pvPara)
 
 
 
@@ -54,12 +53,10 @@ def Rate(arg):
 	rate = fsolve(funcPV, 0.01, args = (nper, pmt, pv, fv))
 	return rate[0]
 
-ratePara = [48, -200, 8000]
+# ratePara = [48, -200, 8000]
 # nper, pmt, pv, fv(optional)
+# rate =  Rate(ratePara)
 
-
-rate =  Rate(ratePara)
-print rate
 
 
 def NPer(arg):
@@ -72,8 +69,7 @@ def NPer(arg):
 		fv = arg[3]
 	n = math.log((pmt/r - fv) / (pmt/r -pv)) / math.log(1+r)
 	return n
-NperPara = [0.0525, -200, 1500]
+
+# NperPara = [0.0525, -200, 1500]
 # rate, nper, pmt, pv(optional)
- 
-nper = NPer(NperPara)
-print nper
+# nper = NPer(NperPara)

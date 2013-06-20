@@ -2,7 +2,7 @@ import math
 
 
 def NPer(arg):
-  r = arg[0]
+	r = arg[0]
 	pmt = -arg[1]
 	pv = arg[2]
 	if len(arg) < 4:

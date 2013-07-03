@@ -4,7 +4,7 @@ def ChairsSurvival(N):
 		chairs.append(1)
 	flag = True
 	while True:
-		for i in range(0,100):
+		for i in range(0,N):
 			if flag and chairs[i] == 1:
 				chairs[i] = 0
 				flag = False

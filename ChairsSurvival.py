@@ -30,4 +30,5 @@ for i in range(10000, 10001):
     elapseTime.append(endTime - bgnTime)
 
 
-print elapseTime
+# print elapseTime
+# todo: graph the elapseTime

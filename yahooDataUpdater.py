@@ -1,6 +1,9 @@
 # download historical data from yahoo finance
-# if there is no file named ticker.csv in folder, the file will be created with the data from 2013-01-01 till today
+# if there is no such file named ticker.csv(all the dot and percent are removed from the filename) in folder,
+# the file will be created with the data from 2009-01-01 till today
 # if such file exists, the data from the last line till now will be appended to the csv file
+# all the files are saved in a folder '/Users/cr/desktop/HistoricalData'
+# the tickers can be read from a csv file 'SSEtickers.csv'
 
 import urllib
 import datetime
@@ -10,23 +13,26 @@ import os
 
 class DataUpdater(object):
     
-    def __init__(self, ticker):
+    def __init__(self, ticker, directory):
         self.ticker = ticker
+        self.directory = directory
     
     def updater(self):
         today = datetime.datetime.today()
         year = today.year
         month = today.month
         day = today.day
-        filename = self.ticker + ".csv"
+        try:
+            os.stat(directory)
+        except:
+            os.mkdir(directory)
+        os.chdir(directory)
+        filename = self.ticker.replace(".","").replace("%","") + ".csv"
         if os.path.isfile(filename):
             file = open(filename,'r')
             line = file.readlines()
             lastline = line[-1]
             date = lastline[0:10]
-            # m1 = "0" + str(month-1)
-            # d1 = str(day-3)
-            # y1 = str(year)
             m1 = "0" + str(int(date[5:7])-1)
             d1 = date[8:10]
             y1 = date[0:4]
@@ -47,7 +53,6 @@ class DataUpdater(object):
             f.close()
             if lines == "<html><head><title>Yahoo! - 404 Not Found</title><style>":
                 print "Error"
-                # sys.exit(0)
                 return 0
             date_read = lines[1]
             month_read = "0" + str(int(date_read[5:7])-1)
@@ -55,7 +60,6 @@ class DataUpdater(object):
             year_read = date_read[0:4]
             if m1 == month_read and d1 == day_read and y1 == year_read:
                 print "The data is already up to date"
-                # sys.exit(0)
                 return 0
             lines.pop()
             lines.reverse()
@@ -67,7 +71,7 @@ class DataUpdater(object):
         else:
             m1 = "00"
             d1 = "3"
-            y1 = "2000"
+            y1 = "2009"
             m2 = "0" + str(month-1)
             d2 = str(day)
             y2 = str(year)
@@ -88,8 +92,17 @@ class DataUpdater(object):
             for item in lines:
                 resultFile.write(item)
 
+# read tickers from a csv file
+file = open('SSEtickers.csv')   # change file name here
+tickerList = file.readlines()
+file.close()
+tickerlist = [item.strip() for item in tickerList]
 
-tickerList = ["%5EGSPC", "SPY", "%5EVIX"]
-for ticker in tickerList:
-    foo = DataUpdater(ticker)
+# or read tickers from a list
+# tickerlist = ["%5EGSPC", "SPY", "%5EVIX"]
+
+# update...
+directory = '/Users/cr/desktop/HistoricalData'  # change directory path here
+for ticker in tickerlist:
+    foo = DataUpdater(ticker,directory)
     foo.updater()

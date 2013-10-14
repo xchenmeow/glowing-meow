@@ -7,7 +7,7 @@ close = NaN(192,300);
 volume = NaN(192,300);
 for i = 1:300
     open(:,i) = data(:,1+(i-1)*9);
-    close(:,i) = data(:,5+(i-1)*9);
+    close(:,i) = data(:,4+(i-1)*9);
     volume(:,i) = data(:,6+(i-1)*9);
 end
 %%

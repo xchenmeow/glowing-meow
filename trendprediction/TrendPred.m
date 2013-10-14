@@ -1,7 +1,8 @@
+% Trend prediction script.
 
 %%
 % loading data...
-data = xlsread('»¦Éî300Êý¾Ý');
+data = xlsread('SHSZ300.xlsx');
 open = NaN(192,300);
 close = NaN(192,300);
 volume = NaN(192,300);
@@ -10,6 +11,7 @@ for i = 1:300
     close(:,i) = data(:,4+(i-1)*9);
     volume(:,i) = data(:,6+(i-1)*9);
 end
+
 %%
 % classifying...
 % all the stock returns have been divided into 11 groups. -5 <= flag <= 5.

@@ -1,4 +1,5 @@
-
+clear
+clc
 %%
 % loading data...
 data = xlsread('»¦Éî300Êý¾Ý');
@@ -14,38 +15,69 @@ end
 % classifying...
 % all the stock returns have been divided into 11 groups. -5 <= flag <= 5.
 % -5 means the stock did not trade in that week. 
-% ret < -0.08       -4;    -0.08<ret<-0.06 -3;
-% -0.06<ret<-0.04	-2;    -0.04<ret<-0.02 -1; 
-% -0.02 < ret < 0    0;    0 < ret < 0.02   1;
-% 0.02<ret<0.04      2;    0.04<ret<0.06    3;
-% 0.06<ret<0.08      4;    0.08 < ret       5;
+% cretiria is mean plus or minus 1/2, 1, 3/2, 2 sigma 
 ret = log(close) - log(open);
 ret(isnan(ret)) = 0;
-flag = floor(ret*50)+1;
+trainingsample = ret(1:50,:);
+[trainingsize,~] = size(trainingsample);
+forcastingsample = ret(51:end,:);
+[M,N] = size(forcastingsample);
+trainingmean = zeros(M-trainingsize,N);
+trainingstd = zeros(M-trainingsize,N);
+for i = 1:M
+    trainingmean(i,:) = mean(ret(i:i+trainingsize,:));
+    trainingstd(i,:) = std(ret(i:i+trainingsize,:));
+end
+SR = (forcastingsample-trainingmean)./trainingstd;
+flag = floor(SR*2)+1;
 flag(flag<-4 & flag ~= -inf) = -4;
 flag(flag>5) = 5;
 flag(flag==-inf) = -5;
+flag(isnan(flag)) = -5;
 
 %%
 % calculating...
-% flag (1-5 at time t-1) shares will be bought at time t.
-% not any stop loss strategy has been considered.
-position = zeros(192,300);
-position(2:end,:) = flag(1:end-1,:);
-position(position <= 0) = 0;
-deltavalue = position.*(close-open);
-totalvalue = cumsum(deltavalue);
 
-% P/L for 1-5 classes.
-% buy one share of each asset at time t, if its flag's in (1,5) at time t-1 
+% strategy 1
+% select first 5 stocks which had highest returns from last week
+% this strategy sucks...
 % not any stop loss strategy has been considered.
-classvalue = NaN(192,5);
-for i = 1:5
-    temp = deltavalue;
-    temp(position == i) = 0;
-    tempmat = deltavalue - temp;
-    classvalue(:,i) = sum(tempmat,2)/i;
+[orderedret,ind] = sort(forcastingsample,2,'descend');
+ind = ind(:,1:5);
+deltaret = zeros(M-1,1);
+for i = 1:M-1
+    deltaret(i) = sum(forcastingsample(i+1,ind(i,:)));
 end
+totalret = sum(deltaret);
+
+% strategy 2
+% P/L for -4-5 classes.
+% buy one share of each asset at time t 
+% not any stop loss strategy has been considered.
+position = zeros(M,N);
+position(2:end,:) = flag(1:end-1,:);
+classvalue = NaN(M,10);
+for i = -4:5
+    temp = forcastingsample;
+    temp(position == i) = 0;
+    tempmat = forcastingsample - temp;
+    classvalue(:,i+5) = sum(tempmat,2);
+    classvalue(1,:) = zeros(1,10);
+end
+
+
+%%
+% analysing...
+% find the best class by the result of stretagy 2 above
+
+% subplot(2,1,1), plot(classvalue(:,5))
+% subplot(2,1,2), plot(classvalue(:,6))
+% qqplot(classvalue(:,2))
+sharpratio = mean(classvalue)./std(classvalue);
+maxloss = min(classvalue);
+orderedvalue = sort(classvalue,1,'ascend');
+VaR = orderedvalue(7,:);
+RAROC = mean(classvalue)./VaR;
 
 
 

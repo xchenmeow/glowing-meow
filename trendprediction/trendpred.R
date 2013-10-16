@@ -17,7 +17,6 @@ trendpred <- function(n)
   close <- as.numeric(as.character(close))
   close <- close[4:length(close)]
 
-<<<<<<< .merge_file_a06052
 # --------------------
 # calculating...
 ret <- log(close) - log(open)
@@ -40,28 +39,6 @@ for (i in -4:5)
 }
 temp = c(classvalue, classrisk)
 return (matrix(temp,nrow = 10, ncol = 2))
-=======
-  # --------------------
-  # calculating...
-  ret <- log(close) - log(open)
-  # flag classify all the returns to 10 class
-  flag <- floor(ret*50)
-  flag[flag < -4] <- -4
-  # buy one share when the stock rise at time t-1
-  position <- c(0, flag[1:length(flag)-1])
-  position[position < 0] <- 0
-  deltavalue <- close - open
-  # classvalue is the total return in a specific class
-  classrisk <- rep(0,each = 5)
-  for (i in 1:5)
-  {
-  	classvalue[i] <- sum(deltavalue[position == i])
-  	classrisk[i] <- sd(deltavalue[position == i])
-  }
-  temp = c(classvalue, classrisk)
-  return (matrix(temp,nrow = 5, ncol = 2))
->>>>>>> .merge_file_a07128
-}
 
 #----------------------
 # looping...

@@ -1,10 +1,7 @@
-<<<<<<< HEAD
+
 clear
 clc
-=======
-% Trend prediction script.
 
->>>>>>> f573ac3f8157821736a04cecb58cc7da497204a1
 %%
 % loading data...
 data = xlsread('SHSZ300.xlsx');

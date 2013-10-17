@@ -2,6 +2,7 @@ clear
 clc
 %%
 % loading data...
+%%%% change file name here %%%%
 data = xlsread('»¦Éî300Êý¾Ý');
 open = NaN(192,300);
 close = NaN(192,300);

@@ -12,14 +12,14 @@ for i = 1:300
     volume(:,i) = data(:,6+(i-1)*9);
 end
 ret = log(close) - log(open);
-% ret(isnan(ret)) = 0;
+
 
 %%
 % classifying...
 % strategy 1
 % all the stock returns have been divided into 11 groups. -5 <= flag <= 5.
 % -5 means the stock did not trade in that week. 
-% cretiria is mean plus or minus 1/2, 1, 3/2, 2 sigma 
+% cretiria is mean plus or minus 0.2533, 0.5244, 0.8416, 1.2816 sigma 
 trainingsample = ret(1:50,:);
 [trainingsize,~] = size(trainingsample);
 forcastingsample = ret(51:end,:);
@@ -44,7 +44,6 @@ flag(isnan(flag)) = -5;
 % strategy 2
 % select 30 stocks per group by the ordered returns from last week
 % not any stop loss strategy has been considered.
-% [orderedret,ind] = sort(forcastingsample,2,'descend');
 quantileret = quantile(forcastingsample,0.1:0.1:0.9,2);
 quantileret = [ones(M,1)*(-10), quantileret, ones(M,1)*10];
 flag1 = zeros(M,N);
@@ -85,14 +84,15 @@ end
 
 % subplot(2,1,1), plot(classvalue(:,5))
 % subplot(2,1,2), plot(classvalue(:,6))
-% qqplot(classvalue(:,9))
+% qqplot(classvalue(:,2))
 cumreturn = cumprod(classvalue+1);
 sharpratio = mean(classvalue)./std(classvalue);
 maxloss = min(classvalue);
 orderedvalue = sort(classvalue,1,'ascend');
 VaR = orderedvalue(7,:);
 RAROC = mean(classvalue)./VaR;
-% plot(cumreturn(:,1))
+% subplot(2,1,1), plot(cumreturn(:,1))
+% subplot(2,1,2), plot(cumreturn(:,10))
 
 
 

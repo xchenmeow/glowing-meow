@@ -14,29 +14,27 @@ for (i in 1:300)
 {
 
 	# assigning...
-	open <- inputfile[,2+(i-1)*9]
+	open <- inputfile[,2+(i-1)*3]
 	open <- as.numeric(as.character(open))
 	open <- open[4:length(open)]
-	close <- inputfile[,5+(i-1)*9]
+	close <- inputfile[,3+(i-1)*3]
 	close <- as.numeric(as.character(close))
 	close <- close[4:length(close)]
 
 	# --------------------
 	# calculating...
 	tempret <- log(close) - log(open)
-	tempret <- tempret[!is.na(tempret)]
 	ret <- matrix(c(ret, tempret), nrow = 192, ncol = i)
 	average <- NULL
 	std <- NULL
 	for (j in 1:142)
 	{
-		average <- c(average, mean(tempret[j:(j+50)]))
-		std <- c(std, sd(tempret[j:(j+50)]))
+		average <- c(average, mean(tempret[j:(j+50)],na.rm = T))
+		std <- c(std, sd(tempret[j:(j+50)], na.rm = T))
 	}
 	SR <- (tempret[51:length(tempret)] - average)/std
 	# flag classify all the returns to 10 class
-	flag <- floor(qnorm(SR)*10)
-	flag <- flag - 5
+	flag <- floor(pnorm(SR)*10)-4
 	flag[flag < -4] <- -4
 	# buy one share at time t-1
 	tempposition <- c(0, flag[1:length(flag)-1])
@@ -51,14 +49,15 @@ totalreturn <- NULL
 for (k in -4:5)
 {
 	tempclassvalue <- NULL
+	num <- 0
 	for (l in 1:142)
 	{
 		y <- forcastingret[l,]
-		z <- y[position[l,] == k]
+		z <- y[position[l,] == k & !is.na(position[l,])]
 		num <- length(z)
 		if (num > 0){
 			tempclassvalue <- c(tempclassvalue, sum(z,na.rm = TRUE)/num)
-		}else{
+		}else{ 
 			tempclassvalue <- c(tempclassvalue, 0)
 		}
 	}

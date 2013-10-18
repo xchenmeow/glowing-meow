@@ -2,15 +2,15 @@ clear
 clc
 %%
 % loading data...
-%%%% change file name here %%%%
-data = xlsread('»¦Éî300Êý¾Ý');
-open = NaN(192,300);
-close = NaN(192,300);
-volume = NaN(192,300);
+data = xlsread('SHSZ300.xlsx',2);
+[m,~] = size(data);
+open = NaN(m,300);
+close = NaN(m,300);
+% volume = NaN(192,300);
 for i = 1:300
-    open(:,i) = data(:,1+(i-1)*9);
-    close(:,i) = data(:,4+(i-1)*9);
-    volume(:,i) = data(:,6+(i-1)*9);
+    open(:,i) = data(:,1+(i-1)*3);
+    close(:,i) = data(:,2+(i-1)*3);
+    % volume(:,i) = data(:,6+(i-1)*9);
 end
 ret = log(close) - log(open);
 
@@ -83,19 +83,36 @@ end
 % analysing...
 % find the best class by the result of stretagy above
 
-% subplot(2,1,1), plot(classvalue(:,5))
-% subplot(2,1,2), plot(classvalue(:,6))
-% qqplot(classvalue(:,2))
 cumreturn = cumprod(classvalue+1);
 sharpratio = mean(classvalue)./std(classvalue);
 maxloss = min(classvalue);
 orderedvalue = sort(classvalue,1,'ascend');
-VaR = orderedvalue(7,:);
+VaR = orderedvalue(floor(M*0.05),:); % alpha = 5%
 RAROC = mean(classvalue)./VaR;
-% subplot(2,1,1), plot(cumreturn(:,1))
-% subplot(2,1,2), plot(cumreturn(:,10))
+figure
+for i = 1:10
+   subplot(2,5,i), qqplot(classvalue(:,i))
+end
 
+% class 5 performs best...
+% [row col] stores the indeces of the stocks in class 5 
+[row, col] = find(position == 5);
 
+%%
+% selecting...
 
+numtd = sum(~isnan(forcastingsample));
+selectingsample = forcastingsample(:,numtd>100);
+correlation = corrcoef(selectingsample, 'rows', 'pairwise');
+% for i = 1:N
+i = 1;
+    tempcorr = correlation(row(col == i),row(col == i));
+    tempcorr = triu(tempcorr);
+    tempcorr(tempcorr == 0) = 2;
+    sortedcorr = sort(reshape(tempcorr,size(tempcorr,2)^2,1));
+    [tempr,tempc] = find(tempcorr < sortedcorr(6));
+    indr = row(tempr);
+    indc = row(tempc);
+% end
 
 

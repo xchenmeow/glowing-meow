@@ -2,11 +2,17 @@
 % this script predicts the afternoon trend by finding the most similar 
 % morning trend in the history 
 
-% loading data manually...
+
 %%
 % set 20 points to present the whole day trend
+clear; clc;
+
+load('highfreqdata.mat');
 price = Data(:,2);
+date = Data(:,1);
 price = price(692:end);
+date = date(692:end);
+date(273) = [];
 price(273) = [];
 [n,~] = size(price);
 price = reshape(price, 1, n);
@@ -69,18 +75,33 @@ for i = 1:length(idx)
     error(i) = pdist2(testingsample(idx(i),:), testingsample(samplesize+i,:));
 end
 
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % uncomment the following codes to see the accuracy of this model
+% press Ctrl C to stop this program.
 
-% testind = 1;
-% subplot(2,2,1);
-% plot(trainingsample(idx(testind),:));
-% subplot(2,2,3);
-% plot(trainingsample(samplesize+testind,:));
-% subplot(2,2,2);
-% plot(testingsample(idx(testind),:));
-% subplot(2,2,4);
-% plot(testingsample(samplesize+testind,:));
+for testind = 100:length(error)
+    clf
+    subplot(2,1,1);
+    hold on
+    plot(1:10,trainingsample(idx(testind),:),'r');
+    plot(11:20,testingsample(idx(testind),:),'b');
+    xlabel(date(idx(testind)));
+    hold off
+    subplot(2,1,2);
+    hold on
+    plot(1:10,trainingsample(samplesize+testind,:),'r');
+    plot(11:20,testingsample(samplesize+testind,:),'b');
+    xlabel(date(samplesize+testind));
+    hold off
+    
+    % Pause
+    fprintf('Program paused. Press enter to continue.\n');
+    pause;
+    
+    fprintf('the predicting distance is %d. \n', error(testind));    
+
+end
 
 %%
 % strategy...

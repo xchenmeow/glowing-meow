@@ -1,8 +1,13 @@
 
 %% 
 % drawing candlestick chart
+clear; clc
+load('highfreqdata.mat');
+date = Data(:,1);
 price = Data(:,2);
+date = date(692:end);
 price = price(692:end);
+date(273) = [];
 price(273) = [];
 [n,~] = size(price);
 price = reshape(price, 1, n);
@@ -38,34 +43,42 @@ for i = 1:size(testsample,1)-k+1
         candlestick(1:samplelen+i-1,:), weight);
 end
 
-% uncomment the following codes to see the in sample test candlestick chart
 
-% istind = 1;
-% subplot(1,2,1);
-% candle(candlehigh(idx(istind):idx(istind)+2), candlelow(idx(istind):idx(istind)+2),...
-%     candleclose(idx(istind):idx(istind)+2), candleopen(idx(istind):idx(istind)+2));
-% subplot(1,2,2);
-% candle(candlehigh(samplelen+istind:samplelen+istind+k-1), ...
-%     candlelow(samplelen+istind:samplelen+istind+k-1), ...
-%     candleclose(samplelen+istind:samplelen+istind+k-1), ...
-%     candleopen(samplelen+istind:samplelen+istind+k-1));
 
 %%
 % testing...
 errdist = zeros(length(idx)-2,1);
 for i = 1:length(idx)-2
-    errdist(i) = candledist(testsample(i+k+1,:), candlestick(idx(i)+k+1,:),1);
+    errdist(i) = candledist(testsample(i+k,:), candlestick(idx(i)+k,:),1);
 end
 
+%%
 % uncomment the following codes to see the backtest candlestick chart
+% press Ctrl C to stop showing the candelstick charts.
 
-% testind = 1;
-% subplot(1,2,1);
-% candle(candlehigh(idx(testind)+4), candlelow(idx(testind)+4), ...
-%     candleclose(idx(testind)+4), candleopen(idx(testind)+4));
-% subplot(1,2,2);
-% candle(candlehigh(samplelen+k+1+testind), candlelow(samplelen+k+1+testind), ...
-%     candleclose(samplelen+k+1+testind), candleopen(samplelen+k+1+testind));
+for testind = 1:length(errdist)
+    
+subplot(2,1,1);
+sample = (idx(testind):idx(testind)+3);
+candle(candlehigh(sample), candlelow(sample),...
+    candleclose(sample), candleopen(sample));
+xlabel(date(idx(testind)));
+
+subplot(2,1,2);
+predicted = (samplelen+testind:samplelen+testind+k);
+candle(candlehigh(predicted), ...
+    candlelow(predicted), ...
+    candleclose(predicted), ...
+    candleopen(predicted));
+xlabel(date(samplelen+testind));
+
+% pause
+fprintf('press Enter to continue. \n');
+pause;
+
+fprintf('the predicted distance is %d. \n', errdist(testind));
+end
+
 
 %%
 % strategy...

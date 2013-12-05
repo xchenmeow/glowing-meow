@@ -1,8 +1,11 @@
 # the class SinaHighFreqUpdater download the historical high frequancy
 # data from sina finance. 
 # SinaHighFreqUpdater(ticker, startdate, directory).Updater create 
-# xls files contain high freq data named with today's date
- 
+# csv files contain high freq data named with today's date
+# sh510050.csv file contains daily data, include open high low close
+# add a flag argument in Updater function.
+# flag == 1 indicates the date in excel date format
+# flag == 0 indicates the date in original format
 
 import urllib
 import datetime
@@ -15,7 +18,7 @@ class SinaHighFreqUpdater(object):
 		self.startdate = startdate
 		self.directory = directory
 
-	def Updater(self):
+	def Updater(self, flag):
 
 		try:
 			os.stat(directory)
@@ -48,23 +51,45 @@ class SinaHighFreqUpdater(object):
 							continue
 						n = len(lines)
 						header = lines.pop(n-1)
+						header = 'time,price, ,volume,turnover\n'
 						resultFile = open(filename,'wb')
 						resultFile.write(header)
+						price = []
 						for item in lines:
 							a = item.split('\t')
 							b = ','.join(a)
 							resultFile.write(b)
+							price.append(float(a[1]))
 						resultFile.close()
 					except:
 						continue
+					
+					dataopen = price[0]
+					dataclose = price[-1]
+					datahigh = max(price)
+					datalow = min(price)
+					dailyfilename = ticker + '.csv'
+					if os.path.isfile(dailyfilename):
+						dailyfile = open(dailyfilename,'a')
+					else:
+						dailyfile = open(dailyfilename,'wb')
+						header = 'date,open,high,low,close\n'
+						dailyfile.write(header)
+					if flag == 1:
+						dailydate = datetoday - datetime.date(1899,12,30)
+						dailytdate = dailydate.days
+					elif flag == 0:
+						dailytdate = datetoday
+					dailyfile.write(str(dailytdate)+','+str(dataopen)+','+str(datahigh)+','+str(datalow)+','+str(dataclose)+'\n')
+					dailyfile.close()
 
 
 # change path here
 directory = '/Users/cx/Desktop/510050highfreq'
 # change start date here
-startdate = datetime.date(2013,10,1)
+startdate = datetime.date(2013,11,1)
 # change ticker here
 ticker = 'sh510050'
 
 foo = SinaHighFreqUpdater(ticker, startdate, directory)
-foo.Updater()
+foo.Updater(1)

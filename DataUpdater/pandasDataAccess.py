@@ -31,4 +31,4 @@ if __name__ == '__main__':
 			symbol_list.append(line.rstrip())
 
 	# print symbol_list[1:]
-	get_all_prices(symbol_list[1:], start, end)
+	get_all_prices(symbol_list[1:5], start, end)

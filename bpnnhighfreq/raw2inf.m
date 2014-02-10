@@ -45,8 +45,11 @@ target_mat = cell2mat(target)';
 % open = 1.479;
 % inputmat = input_mat(:,1:end-1);
 % targetmat = target_mat(:,2:end);
-
-inputmatv2 = 0.25*input_mat(1:50,:)+0.25*input_mat(51:100,:)+0.5*repmat(open,50,1);
+k = floor(size(rawdata,1)/241);
+inputmatv2 = 0.25*input_mat(1:50,:)+0.25*input_mat(51:100,:)+0.5*repmat(open,50,size(input_mat,2));
+if k ~= 1
+    inputmatv2 = [inputmatv2(:,1:end-1);inputmatv2(:,2:end)];
+end
 inputsmooth = zeros(size(inputmatv2));
 for i = 1:size(inputmatv2,2)
     inputsmooth(:,i) = smooth(inputmatv2(:,i));

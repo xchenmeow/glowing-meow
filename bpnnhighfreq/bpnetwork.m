@@ -65,13 +65,20 @@ targetmat = target_mat(:,2:end);
 %         pause(0.1)
 %     end
 % end
-inputmatv2 = 0.3*inputmat(1:50,:)+0.2*inputmat(51:100,:)+0.5*repmat(open,50,1);
-inputsmooth = zeros(size(inputmatv2));
-for i = 1:size(inputmatv2,2)
-    inputsmooth(:,i) = smooth(inputmatv2(:,i)); 
+
+inputmatv2 = 0.3*inputmat(1:floor(size(input_mat)/2),:)+...
+    0.2*inputmat(floor(size(input_mat)/2)+1:size(input_mat)-1,:)+...
+    0.5*repmat(open,50,1);
+inputmatv3 = [inputmatv2(:,1:end-1);inputmatv2(:,2:end)];
+open = open(2:end);
+targetmat = targetmat(:,2:end);
+
+inputsmooth = zeros(size(inputmatv3));
+for i = 1:size(inputmatv3,2)
+    inputsmooth(:,i) = smooth(inputmatv3(:,i)); 
 end
 
-m = size(inputmatv2,2);
+m = size(inputmatv3,2);
 [trainInd,valInd,testInd] = divideind(m,1:floor(m*0.6),floor(m*0.6)+1:floor(m*0.8),floor(m*0.8)+1:m);
 net = feedforwardnet(2,'trainbr');
 net.divideFcn;

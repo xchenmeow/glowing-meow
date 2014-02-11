@@ -1,6 +1,7 @@
 import pandas.io.data as web
 from pandas import Series
 import datetime
+import multiprocessing
 
 
 def get_prices(ticker, start, end, out='', src='yahoo'):
@@ -13,8 +14,22 @@ def get_prices(ticker, start, end, out='', src='yahoo'):
 
 
 def get_all_prices(tickers, start, end, out='csv', src='yahoo'):
+	jobs = []
 	for ticker in tickers:
+		p = multiprocessing.Process(target=get_prices, args=(ticker, start, end, out, src))
+		# get_prices(ticker, start, end, out, src)
+		jobs.append(p)
+		p.start()
+
+
+def get_all_prices_procedural(tickers, start, end, out='csv', src='yahoo'):
+	jobs = []
+	for ticker in tickers:
+		# p = multiprocessing.Process(target=get_prices, args=(ticker, start, end, out, src))
 		get_prices(ticker, start, end, out, src)
+		# jobs.append(p)
+		# p.start()
+		# p.join()
 
 
 if __name__ == '__main__':
@@ -31,4 +46,8 @@ if __name__ == '__main__':
 			symbol_list.append(line.rstrip())
 
 	# print symbol_list[1:]
-	get_all_prices(symbol_list[1:5], start, end)
+	# todo: time here
+	get_all_prices_procedural(symbol_list[1:], start, end)
+	# todo : time here
+	# get_all_prices(symbol_list[1:], start, end)
+	# todo : time here

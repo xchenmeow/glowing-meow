@@ -1,6 +1,5 @@
 args <- commandArgs(trailingOnly = TRUE)
 
-# data_file <- 'C:\\Users\\benqing.shen\\Desktop\\Data\\HYG_returns.csv'
 data_file <- args[1]
 
 df <- read.csv(data_file)

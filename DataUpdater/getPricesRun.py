@@ -1,7 +1,7 @@
 import pandasDataAccess
 import sys
 from datetime import datetime
-
+from writer import csv2db
 # todo: http://docs.python.org/2/library/argparse.html
 
 # Interface now: start (2014-01-01), end, symbols file
@@ -25,3 +25,8 @@ with open(symbol_file, 'rb') as f:
 
 if __name__ == '__main__':
 	pandasDataAccess.get_all_prices(symbol_list, start, end)
+	for i in xrange(len(symbol_list)):
+		try:
+			csv2db(symbol_list[i]+'.csv', symbol_list[i])
+		except sqlite3.IntegrityError:
+			print 'The primary key exists.'

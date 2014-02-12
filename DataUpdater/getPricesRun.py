@@ -22,4 +22,6 @@ with open(symbol_file, 'rb') as f:
 	for line in f:
 		symbol_list.append(line.rstrip())
 
-pandasDataAccess.get_all_prices(symbol_list, start, end)
+
+if __name__ == '__main__':
+	pandasDataAccess.get_all_prices(symbol_list, start, end)

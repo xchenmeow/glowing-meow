@@ -1,6 +1,6 @@
 # returns
 
-import pandas
+import pandas as pd
 import math
 import sys
 
@@ -11,13 +11,69 @@ def yahoo_df_to_return_series(df, return_type='log'):
 	return df_adj_log_return
 
 
+def yahoo_df_to_timeseries(df, col='Adj Close'):
+	'''
+	yahoo df:
+	Date, Open, High, Low, Close, Volume, Adj Close
+
+	timeseries:
+	Date, Value
+	'''
+	return df.ix[:, col]
+
+
+def timeseries_transform(ts, func):
+	ts.apply(func)
+
+
+def timeseries_level_to_return(ts, return_type='log', drop_na=False):
+	if return_type == 'log':
+		return ts.apply(math.log).diff()[(1 if drop_na else 0):]
+	else:
+		raise NotImplementedError
+
+def timeseries_return_to_level(ts, starting_value=1, return_type='log', pivot_date=None):
+	'''
+	This is ugly...
+	'''
+	ts.iloc[0] = starting_value
+	for i in xrange(1,len(ts)):
+		ts.iloc[i] = math.exp(ts.iloc[i]) * ts.iloc[i-1]
+	return ts
+	
+
+
+def make_printed(f):
+	def wrapped(*args):
+		print f(args)
+	return wrapped
+
+
+@make_printed
+def yahoo_df_to_timeseries_2(df, col='Adj Close'):
+	'''
+	yahoo df:
+	Date, Open, High, Low, Close, Volume, Adj Close
+
+	timeseries:
+	Date, Value
+	'''
+	return df.ix[:, col]
+
+
 if __name__ == '__main__':
-	# df_file = 'C:\\Users\\benqing.shen\\Desktop\\Data\\HYG.csv'
-	# return_file = 'C:\\Users\\benqing.shen\\Desktop\\Data\\HYG_returns.csv'
+	df_file = 'IYR.csv'
+	return_file = 'IYR_returns.csv'
 
-	df_file = sys.argv[1]
-	return_file = sys.argv[2]
+	# df_file = sys.argv[1]
+	# return_file = sys.argv[2]
 
-	df = pandas.DataFrame.from_csv(df_file)
-	df_adj_log_return = yahoo_df_to_return_series(df)
-	df_adj_log_return.to_csv(return_file)
+	df = pd.DataFrame.from_csv(df_file)
+	# df_adj_log_return = yahoo_df_to_return_series(df)
+	# df_adj_log_return.to_csv(return_file)
+	ts = yahoo_df_to_timeseries(df)
+	return_series = timeseries_level_to_return(ts)
+	print return_series.head()
+	print timeseries_return_to_level(return_series, 1000).head()
+
+	

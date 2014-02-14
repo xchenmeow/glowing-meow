@@ -1,6 +1,6 @@
 args <- commandArgs(trailingOnly = TRUE)
 
-# args <- c("C:\\Users\\benqing.shen\\Desktop\\Data", "HYG_returns")
+# args <- c("C:\\Users\\benqing.shen\\Desktop\\Data", "symbols_short.csv")
 
 data_dir <- args[1]
 
@@ -9,11 +9,12 @@ data_dir <- args[1]
 data_names <- read.csv(args[2])
 
 library(rugarch)
+library(xts)
 
 for(i in 1:nrow(data_names)) {
   data_name <- toString(data_names[i, ])
 
-  data_file <- paste(data_dir, "\\", data_name, ".csv", sep="")
+  data_file <- paste(data_dir, "\\", data_name, "_returns.csv", sep="")
 
   # load spec
   if(length(args) == 3) {
@@ -22,14 +23,20 @@ for(i in 1:nrow(data_names)) {
     load("ModelSpec.RData")
   }
   
-  df <- read.csv(data_file)
+  df <- read.csv(data_file, header=FALSE, skip=1)
+  df[, 1] = as.Date(x=df[, 1], format="%Y-%m-%d")
+  df <- xts(df[,2], order.by=df[,1])
+  # read.table()
   # rownames(df) <- df$Date
   
   # spec <- ugarchspec(mean.model=list(armaOrder=c(0,0), include.mean=FALSE))
-  fit <- ugarchfit(spec=spec, data=df[,2])
+  fit <- ugarchfit(spec=spec, data=df)
   save(fit, file=paste(data_name, "fit.RData", sep='_'))
-
+  sink(file=paste(data_name, "fit.txt", sep='_'), split=FALSE)
+  rugarch::show(fit)
 }
+
+sink()
 
 # rugarch::show(fit)
 # ugarchforecast(fitORspec=fit, data=df[,2], n.ahead=1)

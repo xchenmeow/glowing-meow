@@ -45,12 +45,30 @@ def timeseries_return_to_level(ts, starting_value=1, return_type='log', pivot_da
 
 def make_printed(f):
 	def wrapped(*args):
-		print f(args)
+		print f(*args)
 	return wrapped
 
 
+def make_csv_output(f, filepath):
+	def wrapped(*args):
+		f(*args).to_csv(filepath)
+	return wrapped
+
+
+
 @make_printed
-def yahoo_df_to_timeseries_2(df, col='Adj Close'):
+def yahoo_df_to_timeseries_printed(df, col='Adj Close'):
+	'''
+	yahoo df:
+	Date, Open, High, Low, Close, Volume, Adj Close
+
+	timeseries:
+	Date, Value
+	'''
+	return df.ix[:, col]
+
+@make_csv_output
+def yahoo_df_to_timeseries_csv(df, col='Adj Close'):
 	'''
 	yahoo df:
 	Date, Open, High, Low, Close, Volume, Adj Close
@@ -71,9 +89,11 @@ if __name__ == '__main__':
 	df = pd.DataFrame.from_csv(df_file)
 	# df_adj_log_return = yahoo_df_to_return_series(df)
 	# df_adj_log_return.to_csv(return_file)
-	ts = yahoo_df_to_timeseries(df)
-	return_series = timeseries_level_to_return(ts)
-	print return_series.head()
-	print timeseries_return_to_level(return_series, 1000).head()
+	# ts = yahoo_df_to_timeseries(df)
+	# return_series = timeseries_level_to_return(ts)
+	# print return_series.head()
+	# print timeseries_return_to_level(return_series, 1000).head()
+
+	yahoo_df_to_timeseries_2(df)
 
 	

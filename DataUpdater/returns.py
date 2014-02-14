@@ -3,6 +3,7 @@
 import pandas as pd
 import math
 import sys
+import functools
 
 def yahoo_df_to_return_series(df, return_type='log'):
 	df_adj_close = df.ix[:, 'Adj Close']
@@ -44,15 +45,16 @@ def timeseries_return_to_level(ts, starting_value=1, return_type='log', pivot_da
 
 
 def make_printed(f):
+	@functools.wraps(f)
 	def wrapped(*args):
 		print f(*args)
 	return wrapped
 
 
-def make_csv_output(f, filepath):
-	def wrapped(*args):
-		f(*args).to_csv(filepath)
-	return wrapped
+# def make_csv_output(f):
+	# def wrapped(*args):
+		# f(*args).to_csv(filepath)
+	# return wrapped
 
 
 
@@ -67,7 +69,7 @@ def yahoo_df_to_timeseries_printed(df, col='Adj Close'):
 	'''
 	return df.ix[:, col]
 
-@make_csv_output
+# @make_csv_output
 def yahoo_df_to_timeseries_csv(df, col='Adj Close'):
 	'''
 	yahoo df:
@@ -94,6 +96,10 @@ if __name__ == '__main__':
 	# print return_series.head()
 	# print timeseries_return_to_level(return_series, 1000).head()
 
-	yahoo_df_to_timeseries_2(df)
-
+	# ts = yahoo_df_to_timeseries_printed(df)
+	ts = timeseries_level_to_return(yahoo_df_to_timeseries(df))
+	print type(ts)
+	print ts.name
+	# print ts
+	ts.to_csv(return_file, header=True)
 	

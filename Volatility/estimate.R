@@ -1,12 +1,12 @@
 args <- commandArgs(trailingOnly = TRUE)
 
-# args <- c("C:\\Users\\benqing.shen\\Desktop\\Data", "symbols_short.csv")
+# args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_short.csv")
 
 data_dir <- args[1]
 
 # data_file: assumes Yahoo return time series.
 # assumes also date range is processed
-data_names <- read.csv(args[2])
+data_names <- read.csv(args[2], header=FALSE)
 
 library(rugarch)
 library(xts)
@@ -23,7 +23,7 @@ for(i in 1:nrow(data_names)) {
     load("ModelSpec.RData")
   }
   
-  df <- read.csv(data_file, header=FALSE, skip=1)
+  df <- read.csv(data_file, header=TRUE, skip=1)
   df[, 1] = as.Date(x=df[, 1], format="%Y-%m-%d")
   df <- xts(df[,2], order.by=df[,1])
   # read.table()

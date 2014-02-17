@@ -20,4 +20,4 @@ if __name__ == '__main__':
 		df = pd.DataFrame.from_csv(df_dir + "\\" + df_file)
 		ts = yahoo_df_to_timeseries(df)
 		return_series = timeseries_level_to_return(ts)
-		return_series.to_csv(df_dir + "\\" + symbol + '_returns.csv')
+		return_series.to_csv(df_dir + "\\" + symbol + '_returns.csv', header=True)

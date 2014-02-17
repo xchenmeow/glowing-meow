@@ -1,1 +1,1 @@
-python .\getPricesRun.py 2014-1-1 2014-2-10 .\symbols_short.csv
+python .\getPricesRun.py 1990-1-1 2014-2-17 .\symbols_short.csv

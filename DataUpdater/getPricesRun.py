@@ -27,14 +27,14 @@ with open(symbol_file, 'rb') as f:
 
 if __name__ == '__main__':
 	pandasDataAccess.get_all_prices(symbol_list, start, end)
-	for i in xrange(len(symbol_list)):
-		try:
-			sqlite_file='pricedata.db'
-			with sqlite3.connect(sqlite_file) as conn:
-				csv2db(symbol_list[i]+'.csv', conn, symbol_list[i])
-			# conn.commit()
-    		# conn.close()
+	# for i in xrange(len(symbol_list)):
+	# 	try:
+	# 		sqlite_file='pricedata.db'
+	# 		with sqlite3.connect(sqlite_file) as conn:
+	# 			csv2db(symbol_list[i]+'.csv', conn, symbol_list[i])
+	# 		# conn.commit()
+ #    		# conn.close()
 
-		except sqlite3.IntegrityError:
-			print 'The primary key exists.'
-			conn.close()
+	# 	except sqlite3.IntegrityError:
+	# 		print 'The primary key exists.'
+	# 		conn.close()

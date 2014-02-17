@@ -8,7 +8,13 @@ def make_soup(url):
 
 
 if __name__ == '__main__':
-    my_link = "http://vlab.stern.nyu.edu/analysis/VOL.SPX:IND-R.GARCH"
+    symbol = 'SPX'
+    annotation = ':IND'
+    data_type = '-R.'
+    model = 'GARCH'
+    my_link = "http://vlab.stern.nyu.edu/users/preferences?lev=3&url=" +\
+        "http://vlab.stern.nyu.edu/analysis/" + "VOL." + \
+        symbol + annotation + data_type + model
 
     soup = make_soup(my_link)
     prediction_tag = soup.find("div", {"id": "sum_prediction"})
@@ -20,8 +26,11 @@ if __name__ == '__main__':
     # .encode_contents().strip()
     # print type(prediction_tag)
     # print prediction_tag
+
     print prediction_date
+    print symbol, model
+    # print model
     print vol_pred_num
 
-    params_tag = soup.find("h4")
-    print params_tag
+    # params_tag = soup.find("h4")
+    # print params_tag

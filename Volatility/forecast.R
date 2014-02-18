@@ -3,7 +3,7 @@ library(xts)
 
 args <- commandArgs(trailingOnly = TRUE)
 # args <- c("C:\\Users\\benqing.shen\\Desktop\\Data", "symbols_short.csv")
-args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_short.csv")
+# args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_short.csv")
 
 data_dir <- args[1]
 data_names <- read.csv(args[2], header=FALSE)

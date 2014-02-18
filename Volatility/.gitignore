@@ -36,5 +36,10 @@ nosetests.xml
 
 
 # Ignore R
-.RData
-.Rhistory
+*.RData
+*.Rhistory
+
+# Ignore data file
+*fit*
+*roll*
+*fcst*

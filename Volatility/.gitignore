@@ -43,3 +43,11 @@ nosetests.xml
 *fit*.RData
 *roll*.RData
 *fcst*.RData
+*fit*.txt
+*roll*.txt
+*fcst*.txt
+*fit*.csv
+*roll*.csv
+*fcst*.csv
+
+

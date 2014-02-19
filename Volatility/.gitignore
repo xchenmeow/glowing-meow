@@ -40,6 +40,6 @@ nosetests.xml
 *.Rhistory
 
 # Ignore data file
-*fit*
-*roll*
-*fcst*
+*fit*.RData
+*roll*.RData
+*fcst*.RData

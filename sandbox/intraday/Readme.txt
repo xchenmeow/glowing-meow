@@ -1,0 +1,1 @@
+Prepare intraday data and copy them to this folder.

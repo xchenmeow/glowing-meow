@@ -8,6 +8,10 @@ def from_ymdv_csv(path):
 def ymdv_2_monthly_return(df, months, return_type='simple'):
 	if return_type != 'simple':
 		raise NotImplemented
+
+	# Convert to capitalized
+	df.index.names = [s.capitalize() for s in df.index.names]
+
 	gdf = df.groupby(level=['Year', 'Month'])
 	ymv = gdf.last()
 	month_end_levels = ymv.tail(months + 1)

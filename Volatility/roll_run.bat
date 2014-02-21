@@ -1,0 +1,1 @@
+C:\Users\benqing.shen\Documents\R\R-3.0.2\bin\Rscript.exe roll.R "C:\\bshen\\glowing-meow\\DataUpdater\\return_temp" symbols_two.csv 2000

@@ -37,10 +37,14 @@ def timeseries_return_to_level(ts, starting_value=1, return_type='log', pivot_da
 	'''
 	This is ugly...
 	'''
-	ts.iloc[0] = starting_value
-	for i in xrange(1,len(ts)):
-		ts.iloc[i] = math.exp(ts.iloc[i]) * ts.iloc[i-1]
-	return ts
+	level_ts = ts.copy()
+	level_ts.iloc[0] = starting_value
+	for i in xrange(1,len(level_ts)):
+		if return_type == 'log':
+			level_ts.iloc[i] = math.exp(ts.iloc[i]) * level_ts.iloc[i-1]
+		elif return_type == 'simple':
+			level_ts.iloc[i] = (ts.iloc[i] + 1) * level_ts.iloc[i-1]
+	return level_ts
 	
 
 

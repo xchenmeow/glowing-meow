@@ -22,7 +22,7 @@ def CalWeightList(n):
 		if sum(templist) == 10:
 			weightlist.append(templist)
 	print len(weightlist)
-	f = open('weightlist2.csv','w')
+	f = open('weightlist2.csv','wb')
 	for item in weightlist:
 		if len(item)<n:
 			b = item + [0]*(n-len(item))
@@ -33,4 +33,4 @@ def CalWeightList(n):
 		foo.writerow(c)
 	f.close()
 
-CalWeightList(4)
+CalWeightList(6)

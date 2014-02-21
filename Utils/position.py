@@ -60,6 +60,7 @@ class open_sub_position(object):
 if __name__ == '__main__':
 	ibb_position0 = open_sub_position('IBB', '2/11/2014', 19, 254.43)
 	print ibb_position0.most_recent_value()
+	print ibb_position0.most_recent_price()
 
 	ibb_position = open_position('IBB')
 	ibb_position.add_sub_position(ibb_position0)

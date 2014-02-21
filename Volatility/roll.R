@@ -2,7 +2,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_short.csv", 500)
 # args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_one.csv", 2500)
-args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_one.csv", 4000)
+# args <- c("C:\\bshen\\glowing-meow\\DataUpdater\\return_temp", "symbols_one.csv", 4000)
 
 data_dir <- args[1]
 

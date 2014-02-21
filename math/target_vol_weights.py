@@ -8,12 +8,19 @@ from quadratic_formula import solve_quadratic_equation
 # solve for w
 
 def weights_for_target(cov, target_var, rank=2, w3=0):
+	'''
+	return the weight for risky asset in the vol target problem
+	'''
 	# check cov is valid?
 	if rank == 2:
 		a = cov[0, 0] + cov[1, 1] - 2 * cov[0, 1]
 		b = 2 * cov[0, 1] - 2 * cov[1, 1]
 		c = cov[1, 1] - target_var
-		weights = solve_quadratic_equation(a, b, c)
+		try:
+			weights = solve_quadratic_equation(a, b, c)
+		except Exception, e:
+			weights = None, None
+		
 		return weights
 	elif rank == 3:
 		a = cov[0, 0] + cov[1, 1] - 2 * cov[0, 1]
@@ -31,6 +38,28 @@ def simple_weight(vol, target_vol):
 def make_simple_weight(target_vol):
 	def weight(vol):
 		return simple_weight(vol, target_vol)
+
+	return weight
+
+
+def two_independent_weights(vol1, vol2, target_vol):
+	mat = np.array([vol1 * vol1, 0, 0, vol2 * vol2]).reshape(2, 2)
+	w1 = weights_for_target(mat, target_vol * target_vol)[0]
+	if w1 is not None:
+		w2 = 1 - w1
+	else:
+		# what to do?
+		w1 = 0
+		w2 = 0
+	
+	return w1
+
+
+def make_two_independent_weights(target_vol):
+	def weight(vols):
+		vol1 = vols[0]
+		vol2 = vols[1]
+		return two_independent_weights(vol1, vol2, target_vol)
 
 	return weight
 

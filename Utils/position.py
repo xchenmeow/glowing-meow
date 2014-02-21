@@ -1,3 +1,6 @@
+from urllib2 import urlopen
+from bs4 import BeautifulSoup
+
 class open_position(object):
 	"""Open Positions"""
 	def __init__(self, symbol, quantity):
@@ -18,7 +21,12 @@ class open_sub_position(object):
 		# todo
 		# how : send self.symbol to "data center" 
 		# and get the most recent price.
-		return 265.46
+		ibburl = 'http://www.marketwatch.com/investing/fund/' + self.symbol
+		html = urlopen(ibburl).read()
+		soup = BeautifulSoup(html)
+		price = soup.find_all('p', class_='data bgLast')
+		# 265.46
+		return float(price[0].get_text())
 
 	def most_recent_value(self):
 		return self.most_recent_price() * self.quantity

@@ -47,6 +47,19 @@ def timeseries_return_to_level(ts, starting_value=1, return_type='log', pivot_da
 	return level_ts
 	
 
+def timeseries_return_to_level_bfill(ts, end_date, end_value, return_type='simple'):
+	'''
+	This is ugly...
+	'''
+	level_ts = ts[:end_date].copy()
+	level_ts.ix[end_date] = end_value
+	for i in xrange(len(level_ts) - 1, 0, -1):
+		if return_type == 'log':
+			level_ts.iloc[i] = math.exp(ts.iloc[i]) * level_ts.iloc[i-1]
+		elif return_type == 'simple':
+			level_ts.iloc[i - 1] = level_ts.iloc[i] / (ts.iloc[i] + 1)
+	return level_ts
+
 
 def make_printed(f):
 	@functools.wraps(f)

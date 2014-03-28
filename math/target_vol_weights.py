@@ -74,6 +74,13 @@ if __name__ == '__main__':
 	# [0] takes the larger root.
 	print weights_for_target(mat, 0.01, rank=3, w3=0.31300042843175779)[0]
 
+	mat = np.array([0.025541284883283947, 0, -0.0012724316207165722, 0,
+	 0, 0, -0.0012724316207165722, 0, 0.00087509901360305158]).reshape(3, 3)
+	# print mat
+	# expecting: 0.63881832504252956
+	# [0] takes the larger root.
+	print weights_for_target(mat, 0.01, rank=3, w3=0.31300042843175779)[0]
+
 	mat = np.array([0.15 * 0.15, 0, 0, 0]).reshape(2, 2)
 	# print mat
 	# expecting: 0.64359509624261146

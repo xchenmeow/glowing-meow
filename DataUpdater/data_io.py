@@ -59,27 +59,6 @@ def get_one_latest_map(df, code):
 
 
 code = '101'
-latest_map = get_one_latest_map(fund_map_df, int(code))
-
-orig_fund_levels = read_ymdv_csv('_'.join(['fund', code]) + '.csv')
-sliced = orig_fund_levels.loc[all_idx_df.index].dropna()
-first_date = sliced.index[0]
-first_value = sliced.values[0, 0]
-
-bfill_idx_df = all_idx_df[:first_date]
-
-bfill_index = bfill_idx_df.index
-bfill_map_df = pd.DataFrame(data=map(list, latest_map.values), index=bfill_index)
-bfill_map_df.columns = all_idx_df.columns
-
-bfill_idx_returns = bfill_idx_df.pct_change()
-bfill_fund_returns = (bfill_idx_returns * bfill_map_df).sum(axis=1)
-bfill_fund_levels = timeseries_return_to_level_bfill(
-	bfill_fund_returns, first_date, first_value)
-# todo: column name ad hoc
-bfill_fund_levels_df = bfill_fund_levels.to_frame(code + 'Level')
-
-df = pd.concat([bfill_fund_levels_df, sliced[1:]])
 
 
 def backfill_one_fund(code, fund_map_df, all_idx_df):
@@ -110,6 +89,17 @@ def backfill_one_fund(code, fund_map_df, all_idx_df):
 
 	df = pd.concat([bfill_fund_levels_df, sliced[1:]])
 	return df
+
+# backfill_all_fund
+bfill_funds = [backfill_one_fund(c, fund_map_df, all_idx_df) for c in fund_codes]
+bfill_funds_df = pd.concat(bfill_funds, axis=1)
+
+
+hrisk_weights = [0.5011454, 0.058993464, 0.099377016, 0.113120518, 0.057524371, 0.087030272, 0.082808958]
+bfill_funds_df['n'] = range(5832)
+cur_pos = bfill_funds_df['n'].loc['2014-2-4']
+start_pos = cur_pos - 252 * 21 + 1
+
 
 
 def ymdv_2_monthly_return(df, months, return_type='simple'):

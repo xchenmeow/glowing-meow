@@ -23,7 +23,7 @@ class Account(object):
         self.position = 0
         self.cost = 0
         self.pv = 0
-    def MTM(self, order):
+    def mark_to_market(self, order):
         self.order = order
         self.position += self.order.units
         self.cost += self.order.price * (self.order.units)
@@ -33,14 +33,25 @@ class Account(object):
         return 0
 
 
+class EurodollarFutures(Futures):
+    """
+    EurodollarFutures
+    """
+    def __init__(self, arg):
+        super(EurodollarFutures, self).__init__()
+        self.arg = arg
+        self.notional = 1000000
+        # self.daycount = "act/360" i.e. 90/360
+        
+
 
 account = Account(5000)
 contract1 = FuturesContract("SPX", "Jun", 500)
 order1 = Order(contract1, 1, 500)
-foo1 = account.MTM(order1)
+foo1 = account.mark_to_market(order1)
 contract2 = FuturesContract("SPX","Jun",490)
 order2 = Order(contract2, 1, 490)
-foo2 = account.MTM(order2)
+foo2 = account.mark_to_market(order2)
 contract3 = FuturesContract("SPX","Jun",510)
 order3 = Order(contract3, -2, 510)
-foo3 = account.MTM(order3)
+foo3 = account.mark_to_market(order3)

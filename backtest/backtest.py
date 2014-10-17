@@ -30,7 +30,7 @@ def backtest(positions):
     start_date = positions.index[0]
     end_date = positions.index[-1]
     yahoo_data = web.DataReader(investments, 'yahoo', start_date, end_date)
-    historic_close = yahoo_data.Close
+    historic_close = yahoo_data['Adj Close']
 
     return positions * historic_close
 
@@ -64,7 +64,7 @@ def buy_and_hold_postion(date_range, investments, init_account=10000.0, weightin
     start_date = date_range[0]
     end_date = date_range[-1]
     yahoo_data = web.DataReader(investments, 'yahoo', start_date, end_date)
-    historic_close = yahoo_data.Close
+    historic_close = yahoo_data['Adj Close']
     if weighting == None:
         init_allocation = [init_account / len(investments) for i in investments]
         init_position = init_allocation / historic_close.ix[0, ].values
@@ -74,7 +74,36 @@ def buy_and_hold_postion(date_range, investments, init_account=10000.0, weightin
         df.columns = investments
         return df
     else:
+        # weighting list must add to 1
         pass
+
+
+def constant_weighting_position(date_range, investments, init_account=10000.0, weighting=None):
+    '''
+    60-40
+    adjust everyday.
+    '''
+    # todo: sort with weighting.
+    investments.sort()
+
+    start_date = date_range[0]
+    end_date = date_range[-1]
+    yahoo_data = web.DataReader(investments, 'yahoo', start_date, end_date)
+    historic_close = yahoo_data['Adj Close']
+    if weighting == None:
+        init_allocation = [init_account / len(investments) for i in investments]
+        init_position = init_allocation / historic_close.ix[0, ].values
+        # todo
+        series_list = [pd.Series(pos, index=date_range) for pos in init_position]
+        # return (init_position, pd.DataFrame(init_position, index=date_range))
+        df = pd.concat(series_list, axis = 1)
+        df.columns = investments
+        return df
+    else:
+        constant_allocation = [init_account * w for w in weighting]
+        # return constant_allocation
+        positions = constant_allocation / historic_close
+        return positions
 
 
 
